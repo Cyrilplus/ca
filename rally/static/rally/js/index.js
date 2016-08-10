@@ -1,6 +1,8 @@
 $(function () {
     var chart_statistic = false;
     var donut_today = false;
+    var end = new Date();
+    var start = new Date();
     var statistic = function (date) {
         $.ajax({
             url: '/rally/totalstatus',
@@ -10,6 +12,10 @@ $(function () {
                 date: date,
             },
             success: function (data) {
+                /**
+                 * @param {{thumb_up:string,thumb_down:string}} data
+                 *
+                 */
                 if (date == 'yesterday') {
                     $("#yesterday-up").html(data.thumb_up);
                     $("#yesterday-down").html(data.thumb_down);
@@ -56,6 +62,9 @@ $(function () {
                 end: end,
             },
             success: function (data) {
+                /**
+                 * @param {{statistic:Array}} data
+                 */
                 if (!chart_statistic) {
                     chart_statistic = Morris.Line({
                         element: 'morris-chart-daily-team-trend',
@@ -78,8 +87,7 @@ $(function () {
             }
         });
     };
-    end = new Date();
-    start = new Date();
+
     start.setDate(start.getDate() - 9);
     chart_statistic_of_days(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
     var thumb_down_statistic = function (start, end) {
@@ -132,4 +140,5 @@ $(function () {
         });
     };
     thumb_down_statistic(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
+
 });

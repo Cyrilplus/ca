@@ -16,7 +16,7 @@ def index(request):
 
 
 def manage(request):
-    return render(request, 'rally/manage.html')
+    return render(request, 'rally/team_daily.html')
 
 
 @csrf_exempt
