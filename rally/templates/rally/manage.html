@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% extends 'rally/layout.html' %}
+{% load static %}
+{% block title %}
+    Rally At Cisco
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'rally/css/tips.min.css' %}" media="screen" title="no title" charset="utf-8">
+    <style media="screen">
+        table {
+            table-layout: fixed;
+        }
+        td,
+        th {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 20px;
+        }
+        td:nth-child(1){
+          display: none;
+        }
+        td:nth-child(1),
+        th:nth-child(1) {
+            width: 18%;
+        }
+        td:nth-child(2),
+        th:nth-child(2) {
+            width: 30%;
+        }
+        td:nth-child(3),
+        th:nth-child(3) {
+            width: 28%;
+        }
+        td:nth-child(4),
+        th:nth-child(4) {
+            width: 24%;
+        }
+        .content {
+        }
+        .manage-header ol > li,
+        .manage-header p {
+          font-size: 14px;
+        }
+        .manage-header p{
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+        caption{
+          font-size: 20px;
+          font-weight: bold;
+        }
+        table > tbody > tr{
+          background-color: #5cb85c;
+          color: white;
+        }
+        .thumb-down-color{
+          background-color: #f0ad4e;
+        }
+        select{
+          color: black;
+        }
+        #yesterday-table thead tr{
+          background-color: #FF8C00;
+          color: white;
+        }
+        #yesterday-table caption{
+          color: #FF8C00;
+        }
+        #today-table thead tr{
+          background-color: #436EEE;
+          color: white;
+        }
+        #today-table caption{
+          color: #436EEE;
+
+        }
+
+    </style>
+{% endblock %}
+
+{% block header %}
+    Manage
+{% endblock %}
+{% block content %}
+    <div class="manage-header">
+      <div class="row">
+          <h2 class="text-center">Thumb-up & Thumb-down Definition</h2>
+          <ol>
+            <li>Generally, this chart reflects the team status on user story completion trends in a sprint such as wheather the team can complete or fail in the planned user stories and also the team's confidence in a sprint. </li>
+            <li>If a team member works on the customer issues or is blocked by the issues which will impact his/her user story status, he/she can show thumb down on daily scrum meeting.</li>
+            <li>If the team member thinks the user story progress in the expected schedule, they can show thumb up on the daily scrum meeting.</li>
+            <li>By default, if the team members are not available on daily scrum meeting, we think this team member status as thumb up today.</li>
+          </ol>
+          <p>
+            Note: In the table of Yesterday you can double click the cell of "Notes" to get detail information, but you can't modify the text of notes. In the table of today you can double click the cell of "Thumb up/down" to change the option, double click the cell of "Notes" for detail information and you can modify the text of notes.
+          </p>
+      </div>
+    </div>
+    <div class="content">
+        <div class="row">
+            <div class="col-lg-6">
+                <table id="yesterday-table" class="table table-bordered">
+                    <caption>Yesterday</caption>
+                    <thead>
+                        <tr>
+                            <th>Team member</th>
+                            <th>Thumb up/down</th>
+                            <th>Notes</th>
+                            <th>Thumb down status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.col-lg-6 -->
+
+            <div class="col-lg-6">
+                <table id="today-table" class="table table-bordered">
+                    <caption>Today</caption>
+                    <thead>
+                        <tr>
+                            <th>Team member</th>
+                            <th>Thumb up/down</th>
+                            <th>Notes</th>
+                            <th>Thumb down status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+    </div>
+
+    <div class="">
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i>
+                        Yesterday Total Thumb up
+                    </div>
+                    <div class="panel-body">
+                        <div id="yesterday-statistic"></div>
+                        <!-- <a href="#" class="btn btn-default btn-block">View Details</a> -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+
+            <div class="col-lg-6">
+                <!-- /.panel -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i>
+                        Today Total Thumb up
+                    </div>
+                    <div class="panel-body">
+                        <div id="today-statistic"></div>
+                        <!-- <a href="#" class="btn btn-default btn-block">View Details</a> -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="notes-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Notes</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="notes-form" action="index.html" method="post">
+                        <textarea class="form-control modal-body-content"></textarea>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-save">Save changes</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'rally/js/manage.js' %}" charset="utf-8"></script>
+{% endblock %}

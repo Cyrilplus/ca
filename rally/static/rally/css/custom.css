@@ -1,0 +1,7 @@
+.footer{
+  margin-top: 10px;
+}
+
+.footer > p {
+  font-size: 14px;
+}
