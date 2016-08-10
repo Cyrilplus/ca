@@ -1,15 +1,15 @@
 /**
-auth: Yong nie
-created time: 2016/8/4
-*/
+ auth: Yong nie
+ created time: 2016/8/4
+ */
 
 
-$(function() {
+$(function () {
     var options = {};
     var select = '';
     var statistic = false;
     var donut_yesterday = false;
-    var donut_today =  false;
+    var donut_today = false;
     var team_status_pk = false;
     var notes_cell = false;
     // {
@@ -30,14 +30,14 @@ $(function() {
     //     15: 'Others',
     // };
 
-    var get_options = function() {
+    var get_options = function () {
         $.ajax({
             url: '/rally/options',
             dataType: 'JSON',
             method: 'POST',
             async: "false",
-            success: function(data) {
-                $.each(data.options, function(index, item) {
+            success: function (data) {
+                $.each(data.options, function (index, item) {
                     options[item.pk] = item.name;
                 });
                 select = "<select>";
@@ -46,14 +46,14 @@ $(function() {
                 }
                 select += "</select>";
             },
-            error: function() {
+            error: function () {
                 alert("Can't load options from server");
             }
         });
     };
     get_options();
 
-    var modified_field = function(pk, field, data) {
+    var modified_field = function (pk, field, data) {
         $.ajax({
             url: '/rally/modifiedfield',
             dataType: 'JSON',
@@ -63,17 +63,17 @@ $(function() {
                 field: field,
                 data: data,
             },
-            success: function(data) {
-              display_statistic('today');
+            success: function (data) {
+                display_statistic('today');
             },
-            error: function() {
+            error: function () {
                 alert("Can't modify the data");
             }
         });
     };
 
 
-    var find_val_by_name = function(opts, name) {
+    var find_val_by_name = function (opts, name) {
         for (var item in opts) {
             if (opts[item] == name) {
                 return item;
@@ -83,7 +83,7 @@ $(function() {
     };
 
 
-    var select_changed = function() {
+    var select_changed = function () {
         var opt = $(this).find('option:selected').text();
         var val = $(this).val();
         var status = $(this).parent().parent().children('.thumb-down-status');
@@ -93,8 +93,8 @@ $(function() {
         $(this).parent("td").html(opt);
         if (val != 1) {
             status.html('1');
-            if(!tr.hasClass('thumb-down-color')){
-              tr.addClass('thumb-down-color');
+            if (!tr.hasClass('thumb-down-color')) {
+                tr.addClass('thumb-down-color');
             }
         } else {
             status.html('0');
@@ -102,7 +102,7 @@ $(function() {
         }
     };
 
-    var select_blur = function() {
+    var select_blur = function () {
         var opt = $(this).find('option:selected').text();
         var val = $(this).val();
         var status = $(this).parent().parent().children('.thumb-down-status');
@@ -115,17 +115,17 @@ $(function() {
         }
     };
 
-    $("#notes-modal .btn-save").click(function(){
-      var content = $(".modal-body-content").val();
-      modified_field(team_status_pk, 'notes', content);
-      if(notes_cell)
-        notes_cell.html(content);
-      $("#notes-modal").modal('hide');
+    $("#notes-modal .btn-save").click(function () {
+        var content = $(".modal-body-content").val();
+        modified_field(team_status_pk, 'notes', content);
+        if (notes_cell)
+            notes_cell.html(content);
+        $("#notes-modal").modal('hide');
     });
 
-    var display_one_day = function(table, date, edit) {
-        var tbody = table + ' > tbody';
-        var seletor = table + ' .option';
+    var display_one_day = function (table, date, edit) {
+        var table_body_selector = table + ' > tbody';
+        var select_seletor = table + ' .option';
         var notes = table + ' .notes';
         $.ajax({
             url: '/rally/teamstatus',
@@ -134,10 +134,10 @@ $(function() {
             data: {
                 date: date,
             },
-            success: function(data) {
+            success: function (data) {
                 team_status_list = data.team_status;
-                $(tbody).html('');
-                $.each(team_status_list, function(index, item) {
+                $(table_body_selector).html('');
+                $.each(team_status_list, function (index, item) {
                     var status_val = 0;
                     var color_class = '';
                     if (item.status != 'Thumb up') {
@@ -152,9 +152,9 @@ $(function() {
                         '<td class="notes">' + item.notes + "</td>" +
                         '<td class="thumb-down-status">' + status_val + "</td>" +
                         '</tr>';
-                    $(tbody).append(row);
+                    $(table_body_selector).append(row);
                 });
-                $(seletor).dblclick(function() {
+                $(select_seletor).dblclick(function () {
                     var current_option = $(this).html();
                     $(this).html('');
                     $(this).html(select);
@@ -164,7 +164,7 @@ $(function() {
                     $(this).children('select').blur(select_blur);
                 });
 
-                $(notes).dblclick(function() {
+                $(notes).dblclick(function () {
                     $(".modal-body-content").val('');
                     notes_cell = $(this);
                     $(".modal-body-content").val($(this).html());
@@ -179,12 +179,12 @@ $(function() {
                     $("#notes-modal").modal('show');
                 });
             },
-            error: function() {
+            error: function () {
                 alert("error");
             }
         });
     };
-    var display_statistic = function(date) {
+    var display_statistic = function (date) {
         $.ajax({
             url: '/rally/totalstatus',
             dataType: 'JSON',
@@ -192,7 +192,7 @@ $(function() {
             data: {
                 date: date,
             },
-            success: function(data) {
+            success: function (data) {
                 statistic = [{
                     label: "Thumb up",
                     value: data.thumb_up
@@ -232,7 +232,7 @@ $(function() {
 
                 }
             },
-            error: function() {
+            error: function () {
                 alert('can not get total status data from server');
             }
         });

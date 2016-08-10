@@ -2,10 +2,12 @@ from django.shortcuts import render
 from models import *
 import datetime
 import json
-from django.core import serializers
 from django.http import HttpResponse
 from django.db.models import Count
+
 from django.views.decorators.csrf import csrf_exempt
+
+
 # Create your views here.
 
 
@@ -24,7 +26,7 @@ def team_status_by_date(request):
         date += datetime.timedelta(days=-1)
     team_status_list = TeamStatus.objects.all().filter(date=date)
     result = {}
-    if len(team_status_list) == 0 or team_status_list == None:
+    if len(team_status_list) == 0 or team_status_list is None:
         result['success'] = False
     else:
         result['success'] = True
@@ -42,7 +44,7 @@ def total_status(request):
     team_status_thumb_down = TeamStatus.objects.all().filter(
         date=date).exclude(status=thumb_up)
     result = {}
-    if team_status_thumb_up == None or team_status_thumb_down == None:
+    if team_status_thumb_up is None or team_status_thumb_down is None:
         result['success'] = False
     else:
         result['success'] = True
@@ -55,7 +57,7 @@ def total_status(request):
 def options(request):
     option_list = StatusOption.objects.all()
     result = {}
-    if options == None:
+    if options is None:
         result['success'] = False
     else:
         result['success'] = True
@@ -68,39 +70,42 @@ def modified_field(request):
     team_status = TeamStatus.objects.get(pk=request.POST['pk'])
     field = request.POST['field']
     data = request.POST['data']
-    if(field == 'status'):
+    if field == 'status':
         status = StatusOption.objects.get(pk=data)
         team_status.status = status
-    elif(field == 'notes'):
+    elif field == 'notes':
         team_status.notes = data
     team_status.save()
-    result = {}
+    result = dict()
     result['success'] = True
     return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 @csrf_exempt
-def statisticofdays(request):
+def statistic_of_days(request):
     start = datetime.datetime.strptime(request.POST['start'], '%Y-%m-%d')
     end = datetime.datetime.strptime(request.POST['end'], '%Y-%m-%d')
     thumb_up = StatusOption.objects.get(name='Thumb up')
-    date_span = TeamStatus.objects.values('date').filter(date__gte=start, date__lte=end).annotate(dcount=Count('date')).order_by('date')
+    date_span = TeamStatus.objects.values('date').filter(date__gte=start, date__lte=end).annotate(
+        dcount=Count('date')).order_by('date')
     statistic = []
     for date in date_span:
-        statistic_up = TeamStatus.objects.values('date').filter(status=thumb_up, date=date['date']).annotate(dcount=Count('date'))
-        statistic_down = TeamStatus.objects.values('date').filter(date=date['date']).exclude(status=thumb_up).annotate(dcount=Count('date'))
-        row = {}
+        statistic_up = TeamStatus.objects.values('date').filter(status=thumb_up, date=date['date']).annotate(
+            dcount=Count('date'))
+        statistic_down = TeamStatus.objects.values('date').filter(date=date['date']).exclude(status=thumb_up).annotate(
+            dcount=Count('date'))
+        row = dict()
         row['date'] = date['date'].isoformat()
-        if statistic_up == None or len(statistic_up) == 0:
+        if statistic_up is None or len(statistic_up) == 0:
             row['up'] = 0
         else:
             row['up'] = statistic_up[0]['dcount']
-        if statistic_down == None or len(statistic_down) == 0:
+        if statistic_down is None or len(statistic_down) == 0:
             row['down'] = 0
         else:
             row['down'] = statistic_down[0]['dcount']
         statistic.append(row)
-    result = {}
+    result = dict()
     result['success'] = True
     result['statistic'] = statistic
 
@@ -108,7 +113,7 @@ def statisticofdays(request):
 
 
 @csrf_exempt
-def thumbdownstatistic(request):
+def thumb_down_statistic(request):
     start = datetime.datetime.strptime(request.POST['start'], '%Y-%m-%d')
     end = datetime.datetime.strptime(request.POST['end'], '%Y-%m-%d')
     thumb_up = StatusOption.objects.get(name='Thumb up')
@@ -117,17 +122,17 @@ def thumbdownstatistic(request):
     status_options = StatusOption.objects.all().exclude(name='Thumb up')
     statistic = []
     for date in date_span:
-        thumbdown_of_days = TeamStatus.objects.values('status__name', 'date').filter(
+        thumb_down_of_days = TeamStatus.objects.values('status__name', 'date').filter(
             date=date['date']).exclude(status=thumb_up).annotate(dcount=Count('status__name'))
-        row = {}
+        row = dict()
         row['date'] = date['date'].isoformat()
         for option in status_options:
             row[option.name] = 0
-        for item in thumbdown_of_days:
+        for item in thumb_down_of_days:
             row[item['status__name']] = item['dcount']
         statistic.append(row)
 
-    result = {}
+    result = dict()
     result['success'] = True
     result['thumbdownstatistic'] = statistic
     return HttpResponse(json.dumps(result), content_type='application/json')
