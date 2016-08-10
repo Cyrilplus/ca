@@ -11,6 +11,7 @@
         table {
             table-layout: fixed;
         }
+
         td,
         th {
             text-overflow: ellipsis;
@@ -18,62 +19,81 @@
             overflow: hidden;
             width: 20px;
         }
-        td:nth-child(1){
-          display: none;
+
+        td:nth-child(1) {
+            display: none;
         }
+
         td:nth-child(1),
         th:nth-child(1) {
             width: 18%;
         }
+
         td:nth-child(2),
         th:nth-child(2) {
             width: 30%;
         }
+
         td:nth-child(3),
         th:nth-child(3) {
             width: 28%;
         }
+
         td:nth-child(4),
         th:nth-child(4) {
             width: 24%;
         }
+
         .content {
         }
+
         .manage-header ol > li,
         .manage-header p {
-          font-size: 14px;
+            font-size: 14px;
         }
-        .manage-header p{
-          margin-left: 20px;
-          margin-right: 20px;
+
+        .manage-header p {
+            margin-left: 20px;
+            margin-right: 20px;
         }
-        caption{
-          font-size: 20px;
-          font-weight: bold;
+
+        caption {
+            font-size: 20px;
+            font-weight: bold;
         }
-        table > tbody > tr{
-          background-color: #5cb85c;
-          color: white;
+
+        table > thead, table > tbody {
+            color: #636363;
         }
-        .thumb-down-color{
-          background-color: #f0ad4e;
+
+        table > tbody > tr {
+            background-color: #87CEFF;
         }
-        select{
-          color: black;
+
+        .thumb-down-color {
+            background-color: #FF7F50;
         }
-        #yesterday-table thead tr{
-          background-color: #FF8C00;
-          color: white;
+
+        select {
+            color: black;
         }
-        #yesterday-table caption{
-          color: #FF8C00;
+
+        #yesterday-table thead tr {
+            background-color: #FF8C00;
+            color: white;
         }
-        #today-table thead tr{
-          background-color: #436EEE;
-          color: white;
+
+        #yesterday-table caption {
+            color: #FF8C00;
         }
-        #today-table caption{
-          color: #436EEE;
+
+        #today-table thead tr {
+            background-color: #436EEE;
+            color: white;
+        }
+
+        #today-table caption {
+            color: #436EEE;
 
         }
 
@@ -85,18 +105,30 @@
 {% endblock %}
 {% block content %}
     <div class="manage-header">
-      <div class="row">
-          <h2 class="text-center">Thumb-up & Thumb-down Definition</h2>
-          <ol>
-            <li>Generally, this chart reflects the team status on user story completion trends in a sprint such as wheather the team can complete or fail in the planned user stories and also the team's confidence in a sprint. </li>
-            <li>If a team member works on the customer issues or is blocked by the issues which will impact his/her user story status, he/she can show thumb down on daily scrum meeting.</li>
-            <li>If the team member thinks the user story progress in the expected schedule, they can show thumb up on the daily scrum meeting.</li>
-            <li>By default, if the team members are not available on daily scrum meeting, we think this team member status as thumb up today.</li>
-          </ol>
-          <p>
-            Note: In the table of Yesterday you can double click the cell of "Notes" to get detail information, but you can't modify the text of notes. In the table of today you can double click the cell of "Thumb up/down" to change the option, double click the cell of "Notes" for detail information and you can modify the text of notes.
-          </p>
-      </div>
+        <div class="row">
+            <h2 class="text-center">Thumb-up & Thumb-down Definition</h2>
+            <ol>
+                <li>Generally, this chart reflects the team status on user story completion trends in a sprint such as
+                    wheather the team can complete or fail in the planned user stories and also the team's confidence in
+                    a sprint.
+                </li>
+                <li>If a team member works on the customer issues or is blocked by the issues which will impact his/her
+                    user story status, he/she can show thumb down on daily scrum meeting.
+                </li>
+                <li>If the team member thinks the user story progress in the expected schedule, they can show thumb up
+                    on the daily scrum meeting.
+                </li>
+                <li>By default, if the team members are not available on daily scrum meeting, we think this team member
+                    status as thumb up today.
+                </li>
+            </ol>
+            <p>
+                Note: In the table of Yesterday you can double click the cell of "Notes" to get detail information, but
+                you can't modify the text of notes. In the table of today you can double click the cell of "Thumb
+                up/down" to change the option, double click the cell of "Notes" for detail information and you can
+                modify the text of notes.
+            </p>
+        </div>
     </div>
     <div class="content">
         <div class="row">
@@ -104,12 +136,12 @@
                 <table id="yesterday-table" class="table table-bordered">
                     <caption>Yesterday</caption>
                     <thead>
-                        <tr>
-                            <th>Team member</th>
-                            <th>Thumb up/down</th>
-                            <th>Notes</th>
-                            <th>Thumb down status</th>
-                        </tr>
+                    <tr>
+                        <th>Team member</th>
+                        <th>Thumb up/down</th>
+                        <th>Notes</th>
+                        <th>Thumb down status</th>
+                    </tr>
                     </thead>
                     <tbody>
 
@@ -122,12 +154,12 @@
                 <table id="today-table" class="table table-bordered">
                     <caption>Today</caption>
                     <thead>
-                        <tr>
-                            <th>Team member</th>
-                            <th>Thumb up/down</th>
-                            <th>Notes</th>
-                            <th>Thumb down status</th>
-                        </tr>
+                    <tr>
+                        <th>Team member</th>
+                        <th>Thumb up/down</th>
+                        <th>Notes</th>
+                        <th>Thumb down status</th>
+                    </tr>
                     </thead>
                     <tbody>
 

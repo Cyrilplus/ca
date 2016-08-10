@@ -207,8 +207,8 @@ $(function () {
                             data: statistic,
                             resize: true,
                             colors: [
-                                '#5cb85c',
-                                '#d9534f',
+                                '#87CEFF',
+                                '#FF7F50',
                             ]
                         });
                     } else {
@@ -222,8 +222,8 @@ $(function () {
                             data: statistic,
                             resize: true,
                             colors: [
-                                '#5cb85c',
-                                '#d9534f',
+                                '#87CEFF',
+                                '#FF7F50',
                             ]
                         });
                     } else {

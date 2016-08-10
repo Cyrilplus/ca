@@ -1,7 +1,7 @@
-$(function() {
+$(function () {
     var chart_statistic = false;
     var donut_today = false;
-    var statistic = function(date) {
+    var statistic = function (date) {
         $.ajax({
             url: '/rally/totalstatus',
             dataType: 'JSON',
@@ -9,7 +9,7 @@ $(function() {
             data: {
                 date: date,
             },
-            success: function(data) {
+            success: function (data) {
                 if (date == 'yesterday') {
                     $("#yesterday-up").html(data.thumb_up);
                     $("#yesterday-down").html(data.thumb_down);
@@ -22,15 +22,15 @@ $(function() {
                     }, {
                         label: "Thumb-down",
                         value: data.thumb_down,
-                    }, ];
+                    },];
                     if (!donut_today) {
                         donut_today = Morris.Donut({
                             element: 'morris-donut-chart',
                             data: statistic_today,
                             resize: true,
                             colors: [
-                                '#5cb85c',
-                                '#d9534f',
+                                '#87CEFF',
+                                '#FF7F50',
                             ]
                         });
                     } else {
@@ -38,7 +38,7 @@ $(function() {
                     }
                 }
             },
-            error: function() {
+            error: function () {
                 alert('can not get total status data from server');
             }
         });
@@ -46,7 +46,7 @@ $(function() {
     statistic('yesterday');
     statistic('today');
 
-    var chart_statistic_of_days = function(start, end) {
+    var chart_statistic_of_days = function (start, end) {
         $.ajax({
             url: '/rally/statisticofdays',
             dataType: 'JSON',
@@ -55,7 +55,7 @@ $(function() {
                 start: start,
                 end: end,
             },
-            success: function(data) {
+            success: function (data) {
                 if (!chart_statistic) {
                     chart_statistic = Morris.Line({
                         element: 'morris-chart-daily-team-trend',
@@ -65,15 +65,15 @@ $(function() {
                         ykeys: ['up', 'down'],
                         labels: ['Thumb-up', 'Thumb-down'],
                         lineColors: [
-                            '#5cb85c',
-                            '#d9534f',
+                            '#87CEFF',
+                            '#FF7F50',
                         ],
                     });
                 } else {
                     chart_statistic.setData(data.statistic);
                 }
             },
-            error: function() {
+            error: function () {
                 alert("Can't load statistic data from server");
             }
         });
@@ -82,7 +82,7 @@ $(function() {
     start = new Date();
     start.setDate(start.getDate() - 9);
     chart_statistic_of_days(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
-    var thumb_down_statistic = function(start, end) {
+    var thumb_down_statistic = function (start, end) {
         $.ajax({
             url: '/rally/thumbdownstatistic',
             dataType: 'JSON',
@@ -91,15 +91,15 @@ $(function() {
                 start: start,
                 end: end,
             },
-            success: function(data) {
+            success: function (data) {
                 $("#thumbdownstatistic-table > thead > tr").html('');
                 $("#thumbdownstatistic-table > thead > tr").append("<td>#</td>");
-                $("#thumbdownstatistic-table > tbody  tr").each(function() {
+                $("#thumbdownstatistic-table > tbody  tr").each(function () {
                     var label = $(this).children("td").eq(0).html();
                     $(this).html("<td>" + label + "</td>");
                 });
 
-                $.each(data.thumbdownstatistic, function(index, item) {
+                $.each(data.thumbdownstatistic, function (index, item) {
                     $("#thumbdownstatistic-table > thead > tr").append("<td>" + item.date.slice(5, 10) + "</td>");
                     $("#thumbdownstatistic-table > tbody > tr").eq(0).append("<td>" + item['Architecture unclear'] + "</td>");
                     $("#thumbdownstatistic-table > tbody > tr").eq(1).append("<td>" + item['Interface definition unclear'] + "</td>");
@@ -117,16 +117,16 @@ $(function() {
                     $("#thumbdownstatistic-table > tbody > tr").eq(13).append("<td>" + item.Others + "</td>");
                 });
                 $("#thumbdownstatistic-table > thead > tr").append("<td>sum</td>");
-                $("#thumbdownstatistic-table > tbody  tr").each(function() {
+                $("#thumbdownstatistic-table > tbody  tr").each(function () {
                     var total = 0;
-                    $(this).children('td').each(function(index, item) {
+                    $(this).children('td').each(function (index, item) {
                         if (index !== 0)
                             total += parseInt($(this).html());
                     });
                     $(this).append("<td>" + total + "</td>");
                 });
             },
-            error: function() {
+            error: function () {
                 alert("Can't load thumb down statistic data from server");
             },
         });
