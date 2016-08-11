@@ -135,7 +135,7 @@ $(function () {
                 date: date,
             },
             success: function (data) {
-                team_status_list = data.team_status;
+                var team_status_list = data.team_status;
                 $(table_body_selector).html('');
                 $.each(team_status_list, function (index, item) {
                     var status_val = 0;

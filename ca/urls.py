@@ -19,6 +19,8 @@ from rally import views as rally_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^rally/projects-by-workspace', rally_views.projects_by_workspace),
+    url(r'^rally/workspaces', rally_views.workspaces_info),
     url(r'^rally/thumbdownstatistic', rally_views.thumb_down_statistic),
     url(r'^rally/statisticofdays', rally_views.statistic_of_days),
     url(r'^rally/teamstatus', rally_views.team_status_by_date),
