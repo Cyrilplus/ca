@@ -14,3 +14,10 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ca.settings")
 
 application = get_wsgi_application()
+
+import tool
+#
+tool.auto_create_new_records_everyday()
+
+
+print '*' * 100
