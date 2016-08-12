@@ -36,8 +36,8 @@ def index(request):
     return response
 
 
-def manage(request):
-    response = render(request, 'rally/team_daily.html')
+def team_daily(request):
+    response = render(request, 'rally/team-daily.html')
     if 'workspace_pk' not in request.COOKIES:
         workspace = Workspace.objects.all()[0]
         project = Project.objects.all().filter(workspace=workspace)[0]
@@ -59,6 +59,10 @@ def manage(request):
             response.set_cookie('project_pk', project.pk)
             response.set_cookie('project_name', project.name)
     return response
+
+
+def project_manage(request):
+    return render(request, 'rally/project-manage.html')
 
 
 @csrf_exempt

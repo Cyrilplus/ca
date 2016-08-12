@@ -49,8 +49,8 @@ $(function () {
                     $("#project > .dropdown-menu").append(item);
                 });
                 $("#project > .dropdown-menu a").on('click', function () {
-                    $.cookie('project_pk', parseInt($(this).children('i').html()), {expires: 7, path: '/'});
-                    $.cookie('project_name', $(this).children('span').html(), {expires: 7, path: '/'});
+                    $.cookie('project_pk', parseInt($(this).children('i').html()), {expires: 365, path: '/'});
+                    $.cookie('project_name', $(this).children('span').html(), {expires: 365, path: '/'});
                     location.reload();
                 });
             },

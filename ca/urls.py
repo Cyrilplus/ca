@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^rally/modifiedfield', rally_views.modified_field),
     url(r'^rally/options', rally_views.options),
     url(r'^rally/totalstatus', rally_views.total_status),
-    url(r'^rally/team_daily', rally_views.manage, name='team_daily'),
+    url(r'^rally/project-manage', rally_views.project_manage, name='project-manage'),
+    url(r'^rally/team_daily', rally_views.team_daily, name='team_daily'),
     url(r'^rally/', rally_views.index),
     url(r'^$', rally_views.index, name='home'),
 ]
