@@ -19,6 +19,12 @@ from rally import views as rally_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^rally/add-project-from-rally', rally_views.add_project_from_rally),
+    url(r'^rally/get-iterations-by-project-workspace', rally_views.get_iterations_by_project_workspace),
+    url(r'rally/get-projects-by-workspace-from-rally', rally_views.get_projects_by_workspace_from_rally),
+    url(r'^rally/get-workspaces-from-rally',rally_views.get_workspaces_from_rally),
+    url(r'^rally/workspace-projects-statistic', rally_views.workspace_projects_statistic),
+    url(r'^rally/all-projects', rally_views.all_projects),
     url(r'^rally/projects-by-workspace', rally_views.projects_by_workspace),
     url(r'^rally/workspaces', rally_views.workspaces_info),
     url(r'^rally/thumbdownstatistic', rally_views.thumb_down_statistic),

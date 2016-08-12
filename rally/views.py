@@ -1,11 +1,15 @@
 from django.shortcuts import render
-from models import *
-import datetime
 import json
 from django.http import HttpResponse
 from django.db.models import Count
 
 from django.views.decorators.csrf import csrf_exempt
+from pyral import Rally
+from rally.models import *
+from pyral import RallyRESTAPIError
+import migrate
+
+apikey = '_y5GuRbLvQKq80xgF7yKQB1YYydNb2EURouvzUAbOXs4'
 
 
 # Create your views here.
@@ -230,4 +234,124 @@ def projects_by_workspace(request):
     else:
         result['success'] = True
         result['projects'] = [item.as_json() for item in projects]
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def all_projects(request):
+    projects = Project.objects.all().order_by('workspace__name')
+    result = dict()
+    if len(projects) == 0 or projects is None:
+        result['success'] = False
+    else:
+        json_projects = []
+        for project in projects:
+            members = TeamMember.objects.all().filter(project=project)
+            proj = project.as_json()
+            proj['member-size'] = len(members)
+            json_projects.append(proj)
+        result['success'] = True
+        result['projects'] = json_projects
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def workspace_projects_statistic(request):
+    workspaces = Project.objects.values('workspace__name').annotate(count=Count('workspace__name'))
+    statistic = []
+    for item in workspaces:
+        row = dict()
+        row['count'] = item['count']
+        row['workspace'] = item['workspace__name']
+        statistic.append(row)
+    result = dict()
+    result['success'] = True
+    result['statistic'] = statistic
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def get_workspaces_from_rally(request):
+    result = dict()
+    try:
+        global apikey
+        rally = Rally(apikey=apikey)
+        rally_workspaces = rally.getWorkspaces()
+        workspaces = []
+        for wksp in rally_workspaces:
+            item = dict()
+            item['name'] = wksp.Name
+            item['oid'] = wksp.oid
+            workspaces.append(item)
+        result['success'] = True
+        result['workspaces'] = workspaces
+    except RallyRESTAPIError:
+        result['success'] = False
+        result['message'] = "Can't access rally server"
+
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def get_projects_by_workspace_from_rally(request):
+    result = dict()
+    workspace = request.POST.get('workspace', 'CABU')
+    try:
+        global apikey
+        rally = Rally(apikey=apikey)
+        rally.setWorkspace(workspace)
+        rally_projects = rally.getProjects(workspace)
+        projects = []
+        for project in rally_projects:
+            item = {
+                'name': project.Name,
+                'oid': project.oid
+            }
+            projects.append(item)
+        result['success'] = True
+        result['projects'] = projects
+        result['workspace'] = workspace
+    except RallyRESTAPIError:
+        result['success'] = False
+        result['message'] = "Can't access rally server"
+
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def get_iterations_by_project_workspace(request):
+    workspace = request.POST.get('workspace', 'CABU')
+    project = request.POST.get('project', 'DOCSIS-SJ')
+    result = dict()
+    try:
+        global apikey
+        rally = Rally(apikey=apikey)
+        rally.setWorkspace(workspace)
+        rally.setProject(project)
+        query = '(Owner != null) and (Iteration.Name != null )'
+        takes = rally.get('Task', fetch=True, query=query)
+        iteration_set = set()
+        for task in takes:
+            iteration_set.add(task.Iteration.Name)
+        iterations = []
+        for iteration in iteration_set:
+            iterations.append(iteration)
+        result['success'] = True
+        result['iterations'] = iterations
+    except RallyRESTAPIError:
+        result['success'] = False
+        result['message'] = "Can't access rally server"
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+@csrf_exempt
+def add_project_from_rally(request):
+    workspace = request.POST.get('workspace', 'CABU')
+    project = request.POST.get('project', 'DOCSIS-SJ')
+    iteration = request.POST.get('iteration', '')
+    result = dict()
+    if migrate.migrate_team_member_from_rally(workspace=workspace, project=project, iteration_name=iteration):
+        result['success'] = True
+    else:
+        result['success'] = False
     return HttpResponse(json.dumps(result), content_type='application/json')

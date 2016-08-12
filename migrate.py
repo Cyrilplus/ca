@@ -24,10 +24,10 @@ def migrate_team_member_from_rally(workspace='CABU', project='CRDC L2 CM Provisi
     wksp = rally.getWorkspace()
     if wksp is None:
         print "Rally doesn;t has this workspace: " + workspace
-        return
+        return False
     if proj is None:
         print "Rally doesn't has this project: " + project
-        return
+        return False
     try:
         db_workspace = Workspace.objects.get(oid=str(wksp.oid))
     except Workspace.DoesNotExist:
@@ -59,6 +59,7 @@ def migrate_team_member_from_rally(workspace='CABU', project='CRDC L2 CM Provisi
         except TeamMember.DoesNotExist:
             team_member = TeamMember(user=user_record, project=db_project)
             team_member.save()
+    return True
 
 
 def create_daily_record(workspace_name='CABU', project_name='CRDC L2 CM Provision', date=datetime.datetime.today()):
@@ -102,5 +103,5 @@ def create_status_options():
         'Others',
     ]
     for item in options:
-        status = StatusOption(name=item);
+        status = StatusOption(name=item)
         status.save()

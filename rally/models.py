@@ -56,7 +56,8 @@ class Project(models.Model):
         return {
             'name': self.name,
             'oid': self.oid,
-            'pk': self.pk
+            'pk': self.pk,
+            'workspace': self.workspace.name
         }
 
 
