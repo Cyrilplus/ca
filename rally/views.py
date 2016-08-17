@@ -14,54 +14,62 @@ apikey = '_y5GuRbLvQKq80xgF7yKQB1YYydNb2EURouvzUAbOXs4'
 
 # Create your views here.
 
-
-def index(request):
-    response = render(request, 'rally/index.html')
+def set_cookies(request, response):
     if 'workspace_pk' not in request.COOKIES:
-        workspace = Workspace.objects.all()[0]
-        project = Project.objects.all().filter(workspace=workspace)[0]
+        workspaces = Workspace.objects.all()
+        if len(workspaces) == 0:
+            response.set_cookie('workspace_pk', 0)
+            return
+        workspace = workspaces[0]
+        projects = Project.objects.all().filter(workspace=workspace)
+        if len(projects) == 0:
+            response.set_cookie('project_px', 0)
+            return
+        project = projects[0]
         response.set_cookie('workspace_pk', workspace.pk)
         response.set_cookie('workspace_name', workspace.name)
         response.set_cookie('project_pk', project.pk)
         response.set_cookie('project_name', project.name)
     elif 'project_pk' not in request.COOKIES:
-        workspace = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])[0]
-        project = Project.objects.all().filter(workspace=workspace)[0]
+        workspaces = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])
+        if len(workspaces) == 0:
+            response.set_cookie('workspace_pk', 0)
+            return
+        workspace = workspaces[0]
+        projects = Project.objects.all().filter(workspace=workspace)
+        if len(projects) == 0:
+            response.set_cookie('project_pk', 0)
+            return
+        project = projects[0]
         response.set_cookie('project_pk', project.pk)
         response.set_cookie('project_name', project.name)
     else:
-        workspace = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])[0]
+        workspaces = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])
+        if len(workspaces) == 0:
+            response.set_cookie('workspace_pk', 0)
+            return
+        workspace = workspaces[0]
         try:
             Project.objects.all().filter(pk=request.COOKIES['project_pk'], workspace=workspace)[0]
-        except Project.DoesNotExist:
-            project = Project.objects.all().filter(workspace=workspace)[0]
+        except Project.IndexError:
+            projects = Project.objects.all().filter(workspace=workspace)
+            if len(projects) == 0:
+                response.set_cookie('project_pk', 0)
+                return
+            project = projects[0]
             response.set_cookie('project_pk', project.pk)
             response.set_cookie('project_name', project.name)
+
+
+def index(request):
+    response = render(request, 'rally/index.html')
+    set_cookies(request, response)
     return response
 
 
 def team_daily(request):
     response = render(request, 'rally/team-daily.html')
-    if 'workspace_pk' not in request.COOKIES:
-        workspace = Workspace.objects.all()[0]
-        project = Project.objects.all().filter(workspace=workspace)[0]
-        response.set_cookie('workspace_pk', workspace.pk)
-        response.set_cookie('workspace_name', workspace.name)
-        response.set_cookie('project_pk', project.pk)
-        response.set_cookie('project_name', project.name)
-    elif 'project_pk' not in request.COOKIES:
-        workspace = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])[0]
-        project = Project.objects.all().filter(workspace=workspace)[0]
-        response.set_cookie('project_pk', project.pk)
-        response.set_cookie('project_name', project.name)
-    else:
-        workspace = Workspace.objects.all().filter(pk=request.COOKIES['workspace_pk'])[0]
-        try:
-            Project.objects.all().filter(pk=request.COOKIES['project_pk'], workspace=workspace)[0]
-        except Project.DoesNotExist:
-            project = Project.objects.all().filter(workspace=workspace)[0]
-            response.set_cookie('project_pk', project.pk)
-            response.set_cookie('project_name', project.name)
+    set_cookies(request, response)
     return response
 
 

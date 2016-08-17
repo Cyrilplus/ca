@@ -49,8 +49,7 @@ $(function () {
             }
         });
     };
-    statistic('yesterday');
-    statistic('today');
+
 
     var chart_statistic_of_days = function (start, end) {
         $.ajax({
@@ -88,8 +87,6 @@ $(function () {
         });
     };
 
-    start.setDate(start.getDate() - 9);
-    chart_statistic_of_days(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
     var thumb_down_statistic = function (start, end) {
         $.ajax({
             url: '/rally/thumbdownstatistic',
@@ -108,6 +105,9 @@ $(function () {
                 });
 
                 $.each(data.thumbdownstatistic, function (index, item) {
+                    /**
+                     * @param {{Others:String}} item
+                     */
                     $("#thumbdownstatistic-table > thead > tr").append("<td>" + item.date.slice(5, 10) + "</td>");
                     $("#thumbdownstatistic-table > tbody > tr").eq(0).append("<td>" + item['Architecture unclear'] + "</td>");
                     $("#thumbdownstatistic-table > tbody > tr").eq(1).append("<td>" + item['Interface definition unclear'] + "</td>");
@@ -139,6 +139,14 @@ $(function () {
             },
         });
     };
+    if($.cookie('workspace_pk') == 0){
+        alert('I guess that you are the first time to use this tool');
+        return;
+    }
+    statistic('yesterday');
+    statistic('today');
+    start.setDate(start.getDate() - 9);
+    chart_statistic_of_days(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
     thumb_down_statistic(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
 
 });

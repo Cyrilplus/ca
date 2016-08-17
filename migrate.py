@@ -23,7 +23,7 @@ def migrate_team_member_from_rally(workspace='CABU', project='CRDC L2 CM Provisi
     proj = rally.getProject(project)
     wksp = rally.getWorkspace()
     if wksp is None:
-        print "Rally doesn;t has this workspace: " + workspace
+        print "Rally doesn't has this workspace: " + workspace
         return False
     if proj is None:
         print "Rally doesn't has this project: " + project
